@@ -42,10 +42,12 @@ public abstract class WebRenderer : Renderer
         _jsComponentInterop = jsComponentInterop;
     }
 
+    /// <summary>
+    /// Enables rendering interop between .NET and JavaScript.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> that represents the completion of the operation.</returns>
     public async Task AttachInteropAsync()
     {
-        // TODO: Can this be made async so we're not firing and forgetting?
-
         if (_hasAttachedInterop)
         {
             throw new InvalidOperationException($"{nameof(WebRenderer)} JS interop has already been attached");
