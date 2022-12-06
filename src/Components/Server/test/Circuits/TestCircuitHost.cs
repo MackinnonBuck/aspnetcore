@@ -45,6 +45,7 @@ internal class TestCircuitHost : CircuitHost
                 NullLogger.Instance,
                 jsRuntime,
                 new CircuitJSComponentInterop(new CircuitOptions()));
+            _ = remoteRenderer.AttachInteropAsync();
         }
 
         handlers ??= Array.Empty<CircuitHandler>();

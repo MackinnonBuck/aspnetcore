@@ -71,6 +71,7 @@ internal sealed partial class CircuitFactory : ICircuitFactory
             _loggerFactory.CreateLogger<RemoteRenderer>(),
             jsRuntime,
             jsComponentInterop);
+        _ = renderer.AttachInteropAsync();
 
         var circuitHandlers = scope.ServiceProvider.GetServices<CircuitHandler>()
             .OrderBy(h => h.Order)

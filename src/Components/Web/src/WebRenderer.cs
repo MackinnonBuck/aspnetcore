@@ -19,6 +19,8 @@ public abstract class WebRenderer : Renderer
 {
     private readonly IServiceProvider _serviceProvider;
     private readonly DotNetObjectReference<WebRendererInteropMethods> _interopMethodsReference;
+    private readonly JSComponentInterop _jsComponentInterop;
+    private bool _hasAttachedInterop;
 
     /// <summary>
     /// Constructs an instance of <see cref="WebRenderer"/>.
@@ -37,16 +39,30 @@ public abstract class WebRenderer : Renderer
         _serviceProvider = serviceProvider;
         _interopMethodsReference = DotNetObjectReference.Create(
             new WebRendererInteropMethods(this, jsonOptions, jsComponentInterop));
+        _jsComponentInterop = jsComponentInterop;
+    }
+
+    public async Task AttachInteropAsync()
+    {
+        // TODO: Can this be made async so we're not firing and forgetting?
+
+        if (_hasAttachedInterop)
+        {
+            throw new InvalidOperationException($"{nameof(WebRenderer)} JS interop has already been attached");
+        }
+
+        _hasAttachedInterop = true;
 
         // Supply a DotNetObjectReference to JS that it can use to call us back for events etc.
-        jsComponentInterop.AttachToRenderer(this);
+        _jsComponentInterop.AttachToRenderer(this);
+
         var jsRuntime = _serviceProvider.GetRequiredService<IJSRuntime>();
-        jsRuntime.InvokeVoidAsync(
+        await jsRuntime.InvokeVoidAsync(
             "Blazor._internal.attachWebRendererInterop",
             RendererId,
             _interopMethodsReference,
-            jsComponentInterop.Configuration.JSComponentParametersByIdentifier,
-            jsComponentInterop.Configuration.JSComponentIdentifiersByInitializer).Preserve();
+            _jsComponentInterop.Configuration.JSComponentParametersByIdentifier,
+            _jsComponentInterop.Configuration.JSComponentIdentifiersByInitializer).Preserve();
     }
 
     /// <summary>

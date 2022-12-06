@@ -11,7 +11,7 @@ internal static class RendererRegistry
     // them even though we might still receive incoming events from JS.
 
     private static readonly Dictionary<int, WebAssemblyRenderer>? _renderers = OperatingSystem.IsBrowser() ? new() : null;
-    private static int _nextId;
+    private static int _nextId = 1;
 
     internal static WebAssemblyRenderer Find(int rendererId)
     {

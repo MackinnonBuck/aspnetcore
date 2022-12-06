@@ -49,6 +49,11 @@ function getInteropMethods(rendererId: number): DotNet.DotNetObject {
   return interopMethods;
 }
 
+// TODO: The dispatchEventMiddleware cannot be global state.
+// We need to change which middleware to use depending on the renderer.
+// For WASM renderers, we use a special middleware.
+// For Blazor Server renderers, we don't.
+
 // On some hosting platforms, we may need to defer the event dispatch, so they can register this middleware to do so
 type DispatchEventMiddlware = (browserRendererId: number, eventHandlerId: number, continuation: () => void) => void;
 let dispatchEventMiddleware: DispatchEventMiddlware = (browserRendererId, eventHandlerId, continuation) => continuation();

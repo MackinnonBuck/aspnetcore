@@ -51,6 +51,8 @@
       "src\\Components\\test\\testassets\\ComponentsApp.Server\\ComponentsApp.Server.csproj",
       "src\\Components\\test\\testassets\\GlobalizationWasmApp\\GlobalizationWasmApp.csproj",
       "src\\Components\\test\\testassets\\LazyTestContentPackage\\LazyTestContentPackage.csproj",
+      "src\\Components\\test\\testassets\\ServerWasmCombo.Client\\ServerWasmCombo.Client.csproj",
+      "src\\Components\\test\\testassets\\ServerWasmCombo.Server\\ServerWasmCombo.Server.csproj",
       "src\\Components\\test\\testassets\\TestContentPackage\\TestContentPackage.csproj",
       "src\\Components\\test\\testassets\\TestServer\\Components.TestServer.csproj"
     ]

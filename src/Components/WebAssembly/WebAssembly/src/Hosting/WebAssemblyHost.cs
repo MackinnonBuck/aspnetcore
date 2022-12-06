@@ -148,6 +148,7 @@ public sealed class WebAssemblyHost : IAsyncDisposable
             var loggerFactory = Services.GetRequiredService<ILoggerFactory>();
             var jsComponentInterop = new JSComponentInterop(_rootComponents.JSComponents);
             _renderer = new WebAssemblyRenderer(Services, loggerFactory, jsComponentInterop);
+            await _renderer.AttachInteropAsync();
 
             WebAssemblyNavigationManager.Instance.CreateLogger(loggerFactory);
 
