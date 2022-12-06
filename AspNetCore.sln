@@ -1756,9 +1756,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "perf", "perf", "{74377D3E-E
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Microsoft.AspNetCore.Server.HttpSys.Microbenchmarks", "src\Servers\HttpSys\perf\Microbenchmarks\Microsoft.AspNetCore.Server.HttpSys.Microbenchmarks.csproj", "{3C7C65BF-0C13-418E-90BD-EC9C3CD282CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerWasmCombo.Server", "src\Components\test\testassets\ServerWasmCombo.Server\ServerWasmCombo.Server.csproj", "{C94AD885-58CE-43BE-BF51-B0CD84EB5A77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerWasmCombo.Server", "src\Components\test\testassets\ServerWasmCombo.Server\ServerWasmCombo.Server.csproj", "{C94AD885-58CE-43BE-BF51-B0CD84EB5A77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerWasmCombo.Client", "src\Components\test\testassets\ServerWasmCombo.Client\ServerWasmCombo.Client.csproj", "{BAE536D6-4486-40AC-9043-EC8FBB3ED9D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerWasmCombo.Client", "src\Components\test\testassets\ServerWasmCombo.Client\ServerWasmCombo.Client.csproj", "{BAE536D6-4486-40AC-9043-EC8FBB3ED9D9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

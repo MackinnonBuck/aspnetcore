@@ -84,27 +84,29 @@ export async function boot(options?: Partial<WebAssemblyStartOptions>): Promise<
   Blazor._internal.navigationManager.getUnmarshalledBaseURI = () => BINDING.js_string_to_mono_string(getBaseUri());
   Blazor._internal.navigationManager.getUnmarshalledLocationHref = () => BINDING.js_string_to_mono_string(getLocationHref());
 
-  Blazor._internal.navigationManager.listenForNavigationEvents(async (uri: string, state: string | undefined, intercepted: boolean): Promise<void> => {
-    await DotNet.invokeMethodAsync(
-      'Microsoft.AspNetCore.Components.WebAssembly',
-      AppIds.WebAssembly,
-      'NotifyLocationChanged',
-      uri,
-      state,
-      intercepted
-    );
-  }, async (callId: number, uri: string, state: string | undefined, intercepted: boolean): Promise<void> => {
-    const shouldContinueNavigation = await DotNet.invokeMethodAsync<boolean>(
-      'Microsoft.AspNetCore.Components.WebAssembly',
-      AppIds.WebAssembly,
-      'NotifyLocationChangingAsync',
-      uri,
-      state,
-      intercepted
-    );
+  if (!options?.yieldNavigationControl) {
+    Blazor._internal.navigationManager.listenForNavigationEvents(async (uri: string, state: string | undefined, intercepted: boolean): Promise<void> => {
+      await DotNet.invokeMethodAsync(
+        'Microsoft.AspNetCore.Components.WebAssembly',
+        AppIds.WebAssembly,
+        'NotifyLocationChanged',
+        uri,
+        state,
+        intercepted
+      );
+    }, async (callId: number, uri: string, state: string | undefined, intercepted: boolean): Promise<void> => {
+      const shouldContinueNavigation = await DotNet.invokeMethodAsync<boolean>(
+        'Microsoft.AspNetCore.Components.WebAssembly',
+        AppIds.WebAssembly,
+        'NotifyLocationChangingAsync',
+        uri,
+        state,
+        intercepted
+      );
 
-    Blazor._internal.navigationManager.endLocationChanging(callId, shouldContinueNavigation);
-  });
+      Blazor._internal.navigationManager.endLocationChanging(callId, shouldContinueNavigation);
+    });
+  }
 
   const candidateOptions = options ?? {};
 

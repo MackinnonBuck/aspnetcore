@@ -1,3 +1,15 @@
 ﻿@inherits LayoutComponentBase
 
-<main> @Body </main>
+<div class="page">
+    <div class="nav-menu">
+        <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            Index
+        </NavLink>
+        <NavLink class="nav-link" href="counter">
+            Counter
+        </NavLink>
+    </div>
+    <main>
+        @Body
+    </main>
+</div>

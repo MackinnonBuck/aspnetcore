@@ -19,7 +19,10 @@ async function boot(userOptions?: Partial<ComboStartOptions>): Promise<void> {
   }
 
   if (!userOptions?.bootMode || userOptions.bootMode === 'webassembly') {
-    await bootWebAssembly(userOptions);
+    await bootWebAssembly({
+      ...userOptions,
+      yieldNavigationControl: true,
+    });
   }
 }
 

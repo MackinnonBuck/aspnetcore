@@ -22,6 +22,8 @@ export interface WebAssemblyStartOptions {
    * Gets the application culture. This is a name specified in the BCP 47 format. See https://tools.ietf.org/html/bcp47
    */
   applicationCulture?: string;
+
+  yieldNavigationControl?: boolean;
 }
 
 // This type doesn't have to align with anything in BootConfig.
