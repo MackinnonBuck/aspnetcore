@@ -10,18 +10,28 @@ namespace Microsoft.JSInterop.Infrastructure;
 
 internal sealed class DotNetObjectReferenceJsonConverter<[DynamicallyAccessedMembers(JSInvokable)] TValue> : JsonConverter<DotNetObjectReference<TValue>> where TValue : class
 {
+    private readonly long _appId;
+
     public DotNetObjectReferenceJsonConverter(JSRuntime jsRuntime)
     {
         JSRuntime = jsRuntime;
+
+        // FIXME: This might not be the right place for this.
+        // We might also change this in the future if we allow multiple Blazor apps of the
+        // same kind to run in the same document.
+        _appId = OperatingSystem.IsBrowser() ? 2 : 1;
     }
 
     private static JsonEncodedText DotNetObjectRefKey => DotNetDispatcher.DotNetObjectRefKey;
+
+    private static JsonEncodedText DotNetAppKey => DotNetDispatcher.DotNetAppKey;
 
     public JSRuntime JSRuntime { get; }
 
     public override DotNetObjectReference<TValue> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
     {
         long dotNetObjectId = 0;
+        long dotNetAppId = 0;
 
         while (reader.Read() && reader.TokenType != JsonTokenType.EndObject)
         {
@@ -31,6 +41,11 @@ internal sealed class DotNetObjectReferenceJsonConverter<[DynamicallyAccessedMem
                 {
                     reader.Read();
                     dotNetObjectId = reader.GetInt64();
+                }
+                else if (dotNetAppId == 0 && reader.ValueTextEquals(DotNetAppKey.EncodedUtf8Bytes))
+                {
+                    reader.Read();
+                    dotNetAppId = reader.GetInt64();
                 }
                 else
                 {
@@ -48,6 +63,16 @@ internal sealed class DotNetObjectReferenceJsonConverter<[DynamicallyAccessedMem
             throw new JsonException($"Required property {DotNetObjectRefKey} not found.");
         }
 
+        if (dotNetAppId is 0)
+        {
+            throw new JsonException($"Required property {DotNetAppKey} not found.");
+        }
+
+        if (dotNetAppId != _appId)
+        {
+            throw new InvalidOperationException($"Expected an app ID of {_appId}, but got {dotNetAppId} instead.");
+        }
+
         var value = (DotNetObjectReference<TValue>)JSRuntime.GetObjectReference(dotNetObjectId);
         return value;
     }
@@ -58,6 +83,7 @@ internal sealed class DotNetObjectReferenceJsonConverter<[DynamicallyAccessedMem
 
         writer.WriteStartObject();
         writer.WriteNumber(DotNetObjectRefKey, objectId);
+        writer.WriteNumber(DotNetAppKey, _appId);
         writer.WriteEndObject();
     }
 }

@@ -17,11 +17,11 @@ import { WebAssemblyComponentAttacher } from './Platform/WebAssemblyComponentAtt
 import { discoverComponents, discoverPersistedState, WebAssemblyComponentDescriptor } from './Services/ComponentDescriptorDiscovery';
 import { setDispatchEventMiddleware } from './Rendering/WebRendererInteropMethods';
 import { fetchAndInvokeInitializers } from './JSInitializers/JSInitializers.WebAssembly';
+import { AppIds } from './AppIds';
 
 let started = false;
 
 export async function boot(options?: Partial<WebAssemblyStartOptions>): Promise<void> {
-
   if (started) {
     throw new Error('Blazor has already started.');
   }
@@ -33,6 +33,12 @@ export async function boot(options?: Partial<WebAssemblyStartOptions>): Promise<
   }
 
   setDispatchEventMiddleware((browserRendererId, eventHandlerId, continuation) => {
+    if (browserRendererId === 0) {
+      // Invoke the continuation immediately for the Blazor Server renderer.
+      continuation();
+      return;
+    }
+
     // It's extremely unusual, but an event can be raised while we're in the middle of synchronously applying a
     // renderbatch. For example, a renderbatch might mutate the DOM in such a way as to cause an <input> to lose
     // focus, in turn triggering a 'change' event. It may also be possible to listen to other DOM mutation events
@@ -44,10 +50,10 @@ export async function boot(options?: Partial<WebAssemblyStartOptions>): Promise<
   });
 
   Blazor._internal.applyHotReload = (id: string, metadataDelta: string, ilDelta: string, pdbDelta: string | undefined) => {
-    DotNet.invokeMethod('Microsoft.AspNetCore.Components.WebAssembly', 'ApplyHotReloadDelta', id, metadataDelta, ilDelta, pdbDelta);
+    DotNet.invokeMethod('Microsoft.AspNetCore.Components.WebAssembly', AppIds.WebAssembly, 'ApplyHotReloadDelta', id, metadataDelta, ilDelta, pdbDelta);
   };
 
-  Blazor._internal.getApplyUpdateCapabilities = () => DotNet.invokeMethod('Microsoft.AspNetCore.Components.WebAssembly', 'GetApplyUpdateCapabilities');
+  Blazor._internal.getApplyUpdateCapabilities = () => DotNet.invokeMethod('Microsoft.AspNetCore.Components.WebAssembly', AppIds.WebAssembly, 'GetApplyUpdateCapabilities');
 
   // Configure JS interop
   Blazor._internal.invokeJSFromDotNet = invokeJSFromDotNet;
@@ -81,6 +87,7 @@ export async function boot(options?: Partial<WebAssemblyStartOptions>): Promise<
   Blazor._internal.navigationManager.listenForNavigationEvents(async (uri: string, state: string | undefined, intercepted: boolean): Promise<void> => {
     await DotNet.invokeMethodAsync(
       'Microsoft.AspNetCore.Components.WebAssembly',
+      AppIds.WebAssembly,
       'NotifyLocationChanged',
       uri,
       state,
@@ -89,6 +96,7 @@ export async function boot(options?: Partial<WebAssemblyStartOptions>): Promise<
   }, async (callId: number, uri: string, state: string | undefined, intercepted: boolean): Promise<void> => {
     const shouldContinueNavigation = await DotNet.invokeMethodAsync<boolean>(
       'Microsoft.AspNetCore.Components.WebAssembly',
+      AppIds.WebAssembly,
       'NotifyLocationChangingAsync',
       uri,
       state,
@@ -162,10 +170,10 @@ function invokeJSFromDotNet(callInfo: Pointer, arg0: any, arg1: any, arg2: any):
     const marshalledCallAsyncHandle = monoPlatform.readUint64Field(callInfo, 12);
 
     if (marshalledCallAsyncHandle !== 0) {
-      DotNet.jsCallDispatcher.beginInvokeJSFromDotNet(marshalledCallAsyncHandle, functionIdentifier, marshalledCallArgsJson, resultType, targetInstanceId);
+      DotNet.jsCallDispatcher.beginInvokeJSFromDotNet(marshalledCallAsyncHandle, functionIdentifier, marshalledCallArgsJson, resultType, targetInstanceId, AppIds.WebAssembly);
       return 0;
     } else {
-      const resultJson = DotNet.jsCallDispatcher.invokeJSFromDotNet(functionIdentifier, marshalledCallArgsJson, resultType, targetInstanceId)!;
+      const resultJson = DotNet.jsCallDispatcher.invokeJSFromDotNet(functionIdentifier, marshalledCallArgsJson, resultType, targetInstanceId, AppIds.WebAssembly)!;
       return resultJson === null ? 0 : BINDING.js_string_to_mono_string(resultJson);
     }
   } else {

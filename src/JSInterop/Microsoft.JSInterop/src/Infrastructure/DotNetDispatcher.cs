@@ -26,6 +26,8 @@ public static class DotNetDispatcher
 
     internal static readonly JsonEncodedText DotNetObjectRefKey = JsonEncodedText.Encode("__dotNetObject");
 
+    internal static readonly JsonEncodedText DotNetAppKey = JsonEncodedText.Encode("__dotNetApp");
+
     private static readonly ConcurrentDictionary<AssemblyKey, IReadOnlyDictionary<string, (MethodInfo, Type[])>> _cachedMethodsByAssembly = new();
 
     private static readonly ConcurrentDictionary<Type, IReadOnlyDictionary<string, (MethodInfo, Type[])>> _cachedMethodsByType = new();

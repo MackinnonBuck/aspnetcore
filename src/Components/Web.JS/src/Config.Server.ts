@@ -16,6 +16,7 @@ import { attachRootComponentToLogicalElement } from './Rendering/Renderer';
 import { discoverComponents, discoverPersistedState, ServerComponentDescriptor } from './Services/ComponentDescriptorDiscovery';
 import { sendJSDataStream } from './Platform/Circuits/CircuitStreamingInterop';
 import { fetchAndInvokeInitializers } from './JSInitializers/JSInitializers.Server';
+import { AppIds } from './AppIds';
 
 let renderingFailed = false;
 let started = false;
@@ -107,7 +108,7 @@ async function initializeConnection(options: CircuitStartOptions, logger: Logger
   const newConnection = connectionBuilder.build();
 
   newConnection.on('JS.AttachComponent', (componentId, selector) => attachRootComponentToLogicalElement(0, circuit.resolveElement(selector), componentId, false));
-  newConnection.on('JS.BeginInvokeJS', DotNet.jsCallDispatcher.beginInvokeJSFromDotNet);
+  newConnection.on('JS.BeginInvokeJS', (asyncHandle, identifier, argsJson, resultType, targetInstanceId) => DotNet.jsCallDispatcher.beginInvokeJSFromDotNet(asyncHandle, identifier, argsJson, resultType, targetInstanceId, AppIds.Server));
   newConnection.on('JS.EndInvokeDotNet', DotNet.jsCallDispatcher.endInvokeDotNetFromJS);
   newConnection.on('JS.ReceiveByteArray', DotNet.jsCallDispatcher.receiveByteArray);
 
@@ -182,7 +183,7 @@ async function initializeConnection(options: CircuitStartOptions, logger: Logger
     sendByteArray: (id: number, data: Uint8Array): void => {
       newConnection.send('ReceiveByteArray', id, data);
     },
-  });
+  }, AppIds.Server);
 
   return newConnection;
 }

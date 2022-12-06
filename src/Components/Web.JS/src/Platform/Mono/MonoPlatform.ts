@@ -13,6 +13,7 @@ import { WebAssemblyBootResourceType } from '../WebAssemblyStartOptions';
 import { BootJsonData, ICUDataMode } from '../BootConfig';
 import { Blazor } from '../../GlobalExports';
 import { DotnetPublicAPI, BINDINGType, CreateDotnetRuntimeType, DotnetModuleConfig, EmscriptenModule, MONOType } from 'dotnet';
+import { AppIds } from '../../AppIds';
 
 // initially undefined and only fully initialized after createEmscriptenModuleInstance()
 export let BINDING: BINDINGType = undefined as any;
@@ -593,7 +594,7 @@ function attachInteropInvoker(): void {
         argsJson,
       ) as string;
     },
-  });
+  }, AppIds.WebAssembly);
 }
 
 async function loadTimezone(timeZoneResource: LoadingResource): Promise<void> {
@@ -672,7 +673,7 @@ async function compileWasmModule(wasmResource: LoadingResource, imports: any): P
     // Fall back on ArrayBuffer instantiation.
     const arrayBuffer = await wasmResourceResponse.arrayBuffer();
     const arrayBufferResult = await WebAssembly.instantiate(arrayBuffer, imports);
-    return arrayBufferResult.instance;  
+    return arrayBufferResult.instance;
   }
 }
 
