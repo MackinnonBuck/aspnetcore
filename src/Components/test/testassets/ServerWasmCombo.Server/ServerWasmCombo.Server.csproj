@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ServerWasmCombo\ServerWasmCombo.csproj" />
     <ProjectReference Include="..\ServerWasmCombo.Client\ServerWasmCombo.Client.csproj" />
   </ItemGroup>
 

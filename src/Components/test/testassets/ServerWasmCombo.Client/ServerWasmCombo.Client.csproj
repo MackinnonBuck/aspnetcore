@@ -4,11 +4,16 @@
     <TargetFramework>$(DefaultNetCoreTargetFramework)</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
   </PropertyGroup>
 
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Components.WebAssembly" />
     <Reference Include="Microsoft.AspNetCore.Components.CustomElements" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ServerWasmCombo\ServerWasmCombo.csproj" />
   </ItemGroup>
 
 </Project>

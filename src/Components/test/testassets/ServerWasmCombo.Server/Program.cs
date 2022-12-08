@@ -3,10 +3,14 @@
 
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using ServerWasmCombo;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor(options =>
+{
+    options.RootComponents.RegisterForJavaScript<ServerCounter_server>(nameof(ServerCounter_server));
+});
 
 var app = builder.Build();
 

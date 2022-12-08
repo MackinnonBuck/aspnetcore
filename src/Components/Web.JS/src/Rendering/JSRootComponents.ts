@@ -9,12 +9,13 @@ let nextPendingDynamicRootComponentIdentifier = 0;
 
 type ComponentParameters = object | null | undefined;
 
-let manager: DotNet.DotNetObject | undefined;
+// let manager: DotNet.DotNetObject | undefined;
+const managersByAppId = new Map<number, DotNet.DotNetObject>();
 let jsComponentParametersByIdentifier: JSComponentParametersByIdentifier;
 
 // These are the public APIs at Blazor.rootComponents.*
 export const RootComponentsFunctions = {
-  async add(toElement: Element, componentIdentifier: string, initialParameters: ComponentParameters): Promise<DynamicRootComponent> {
+  async add(toElement: Element, componentIdentifier: string, initialParameters: ComponentParameters, appId = 0): Promise<DynamicRootComponent> {
     if (!initialParameters) {
       throw new Error('initialParameters must be an object, even if empty.');
     }
@@ -24,8 +25,8 @@ export const RootComponentsFunctions = {
     pendingRootComponentContainers.set(containerIdentifier, toElement);
 
     // Instruct .NET to add and render the new root component
-    const componentId = await getRequiredManager().invokeMethodAsync<number>('AddRootComponent', componentIdentifier, containerIdentifier);
-    const component = new DynamicRootComponent(componentId, jsComponentParametersByIdentifier[componentIdentifier]);
+    const componentId = await getRequiredManager(appId).invokeMethodAsync<number>('AddRootComponent', componentIdentifier, containerIdentifier);
+    const component = new DynamicRootComponent(componentId, jsComponentParametersByIdentifier[componentIdentifier], appId);
     await component.setParameters(initialParameters);
     return component;
   },
@@ -70,10 +71,13 @@ class EventCallbackWrapper {
 class DynamicRootComponent {
   private _componentId: number | null;
 
+  private _appId: number;
+
   private readonly _jsEventCallbackWrappers = new Map<string, EventCallbackWrapper>();
 
-  constructor(componentId: number, parameters: JSComponentParameter[]) {
+  constructor(componentId: number, parameters: JSComponentParameter[], appId = 0) {
     this._componentId = componentId;
+    this._appId = appId;
 
     for (const parameter of parameters) {
       if (parameter.type === 'eventcallback') {
@@ -99,12 +103,12 @@ class DynamicRootComponent {
       mappedParameters[key] = callbackWrapper.getJSObjectReference();
     }
 
-    return getRequiredManager().invokeMethodAsync('SetRootComponentParameters', this._componentId, parameterCount, mappedParameters);
+    return getRequiredManager(this._appId).invokeMethodAsync('SetRootComponentParameters', this._componentId, parameterCount, mappedParameters);
   }
 
   async dispose() {
     if (this._componentId !== null) {
-      await getRequiredManager().invokeMethodAsync('RemoveRootComponent', this._componentId);
+      await getRequiredManager(this._appId).invokeMethodAsync('RemoveRootComponent', this._componentId);
       this._componentId = null; // Ensure it can't be used again
 
       for (const jsEventCallbackWrapper of this._jsEventCallbackWrappers.values()) {
@@ -120,14 +124,16 @@ export function enableJSRootComponents(
   jsComponentParameters: JSComponentParametersByIdentifier,
   jsComponentInitializers: JSComponentIdentifiersByInitializer
 ): void {
-  if (manager) {
+  const appId = managerInstance.getAppId();
+
+  if (managersByAppId.has(appId)) {
     // This will only happen in very nonstandard cases where someone has multiple hosts.
     // It's up to the developer to ensure that only one of them enables dynamic root components.
     throw new Error('Dynamic root components have already been enabled.');
   }
 
-  manager = managerInstance;
-  jsComponentParametersByIdentifier = jsComponentParameters;
+  managersByAppId.set(appId, managerInstance);
+  jsComponentParametersByIdentifier = { ...jsComponentParametersByIdentifier, ...jsComponentParameters };
 
   // Call the registered initializers. This is an arbitrary subset of the JS component types that are registered
   // on the .NET side - just those of them that require some JS-side initialization (e.g., to register them
@@ -141,12 +147,17 @@ export function enableJSRootComponents(
   }
 }
 
-function getRequiredManager(): DotNet.DotNetObject {
-  if (!manager) {
-    throw new Error('Dynamic root components have not been enabled in this application.');
+function getRequiredManager(appId: number): DotNet.DotNetObject {
+  const manager = managersByAppId.get(appId);
+  if (manager) {
+    return manager;
   }
 
-  return manager;
+  if (managersByAppId.size === 1) {
+    return managersByAppId.values().next().value;
+  }
+
+  throw new Error('Dynamic root components have not been enabled in this application.');
 }
 
 // Keep in sync with equivalent in JSComponentConfigurationStore.cs

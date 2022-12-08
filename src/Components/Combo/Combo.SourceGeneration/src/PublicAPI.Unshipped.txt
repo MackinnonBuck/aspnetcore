@@ -1,0 +1,4 @@
+﻿Microsoft.AspNetCore.Components.Combo.SourceGeneration.ComboSourceGenerator
+Microsoft.AspNetCore.Components.Combo.SourceGeneration.ComboSourceGenerator.ComboSourceGenerator() -> void
+Microsoft.AspNetCore.Components.Combo.SourceGeneration.ComboSourceGenerator.Execute(Microsoft.CodeAnalysis.GeneratorExecutionContext context) -> void
+Microsoft.AspNetCore.Components.Combo.SourceGeneration.ComboSourceGenerator.Initialize(Microsoft.CodeAnalysis.GeneratorInitializationContext context) -> void
