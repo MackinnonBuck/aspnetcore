@@ -45,6 +45,9 @@ internal sealed partial class CircuitFactory : ICircuitFactory
         var jsRuntime = (RemoteJSRuntime)scope.ServiceProvider.GetRequiredService<IJSRuntime>();
         jsRuntime.Initialize(client);
 
+        var mixedRenderingManager = scope.ServiceProvider.GetRequiredService<MixedRenderingManager>();
+        mixedRenderingManager.Initialize();
+
         var navigationManager = (RemoteNavigationManager)scope.ServiceProvider.GetRequiredService<NavigationManager>();
         var navigationInterception = (RemoteNavigationInterception)scope.ServiceProvider.GetRequiredService<INavigationInterception>();
         if (client.Connected)

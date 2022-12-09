@@ -3,19 +3,23 @@
 
 using Microsoft.JSInterop;
 
-namespace Microsoft.AspNetCore.Components.Combo.Infrastructure;
+namespace Microsoft.AspNetCore.Components.Server;
 
-public sealed class ClientProxy<TComponent> : IComponent, IHandleAfterRender, IAsyncDisposable where TComponent : IComponent
+internal class ClientProxyComponent : IComponent, IHandleAfterRender, IAsyncDisposable
 {
-    private static readonly string s_identifier = typeof(TComponent).Name;
+    private readonly string _identifier;
+    private readonly IJSRuntime _jsRuntime;
 
     private RenderHandle _renderHandle;
     private ElementReference _containerElementReference;
     private IReadOnlyDictionary<string, object>? _pendingParameters;
     private bool _isInitialized;
 
-    [Inject]
-    private IJSRuntime JSRuntime { get; set; } = default!;
+    public ClientProxyComponent(string identifier, IJSRuntime jsRuntime)
+    {
+        _identifier = identifier;
+        _jsRuntime = jsRuntime;
+    }
 
     void IComponent.Attach(RenderHandle renderHandle)
     {
@@ -47,10 +51,10 @@ public sealed class ClientProxy<TComponent> : IComponent, IHandleAfterRender, IA
         _pendingParameters = null;
         _isInitialized = true;
 
-        await JSRuntime.InvokeVoidAsync(
-            "__combo.setParameters",
+        await _jsRuntime.InvokeVoidAsync(
+            "Blazor._internal.MixedRendering.setParameters",
             _containerElementReference,
-            s_identifier,
+            _identifier,
             parameters,
             2 // App ID 2 because we're adding a root component on the client
         );
@@ -62,8 +66,8 @@ public sealed class ClientProxy<TComponent> : IComponent, IHandleAfterRender, IA
         {
             try
             {
-                await JSRuntime.InvokeVoidAsync(
-                    "__combo.dispose",
+                await _jsRuntime.InvokeVoidAsync(
+                    "Blazor._internal.MixedRendering.dispose",
                     _containerElementReference);
             }
             catch (JSDisconnectedException)

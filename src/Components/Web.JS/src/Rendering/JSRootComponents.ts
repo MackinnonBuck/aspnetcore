@@ -7,7 +7,7 @@ const pendingRootComponentContainerNamePrefix = '__bl-dynamic-root:';
 const pendingRootComponentContainers = new Map<string, Element>();
 let nextPendingDynamicRootComponentIdentifier = 0;
 
-type ComponentParameters = object | null | undefined;
+export type ComponentParameters = object | null | undefined;
 
 // let manager: DotNet.DotNetObject | undefined;
 const managersByAppId = new Map<number, DotNet.DotNetObject>();
@@ -68,7 +68,7 @@ class EventCallbackWrapper {
   }
 }
 
-class DynamicRootComponent {
+export class DynamicRootComponent {
   private _componentId: number | null;
 
   private _appId: number;

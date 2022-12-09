@@ -1,2 +1,3 @@
 #nullable enable
 Microsoft.AspNetCore.Builder.ComponentEndpointConventionBuilder.Finally(System.Action<Microsoft.AspNetCore.Builder.EndpointBuilder!>! finalConvention) -> void
+Microsoft.AspNetCore.Components.Server.CircuitOptions.MixedRenderingAssemblies.get -> System.Collections.Generic.IList<string!>!

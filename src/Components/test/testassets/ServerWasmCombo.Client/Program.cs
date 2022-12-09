@@ -2,15 +2,10 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Net.Http;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using ServerWasmCombo;
-using ServerWasmCombo.Client;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-//builder.RootComponents.Add<App>("#app");
-//builder.RootComponents.Add<HeadOutlet>("head::after");
-builder.RootComponents.RegisterForJavaScript<ClientCounter_client>(nameof(ClientCounter_client));
+builder.MixedRenderingAssemblies.Add(nameof(ServerWasmCombo));
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 

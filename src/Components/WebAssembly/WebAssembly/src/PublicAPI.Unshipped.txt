@@ -1,5 +1,6 @@
 #nullable enable
 *REMOVED*static Microsoft.AspNetCore.Components.WebAssembly.HotReload.WebAssemblyHotReload.ApplyHotReloadDelta(string! moduleIdString, byte[]! metadataDelta, byte[]! ilDeta) -> void
+Microsoft.AspNetCore.Components.WebAssembly.Hosting.WebAssemblyHostBuilder.MixedRenderingAssemblies.get -> System.Collections.Generic.IList<string!>!
 static Microsoft.AspNetCore.Components.WebAssembly.HotReload.WebAssemblyHotReload.ApplyHotReloadDelta(string! moduleIdString, byte[]! metadataDelta, byte[]! ilDelta, byte[]! pdbBytes) -> void
 static Microsoft.AspNetCore.Components.WebAssembly.Infrastructure.JSInteropMethods.NotifyLocationChanged(string! uri, string? state, bool isInterceptedLink) -> void
 static Microsoft.AspNetCore.Components.WebAssembly.Infrastructure.JSInteropMethods.NotifyLocationChangingAsync(string! uri, string? state, bool isInterceptedLink) -> System.Threading.Tasks.ValueTask<bool>

@@ -16,6 +16,7 @@ import { Platform, Pointer, System_String, System_Array, System_Object, System_B
 import { getNextChunk, receiveDotNetDataStream } from './StreamingInterop';
 import { RootComponentsFunctions } from './Rendering/JSRootComponents';
 import { attachWebRendererInterop } from './Rendering/WebRendererInteropMethods';
+import { MixedRendering } from './MixedRendering';
 
 interface IBlazor {
   navigateTo: (uri: string, options: NavigationOptions) => void;
@@ -36,6 +37,7 @@ interface IBlazor {
     forceCloseConnection?: () => Promise<void>;
     InputFile?: typeof InputFile,
     NavigationLock: typeof NavigationLock,
+    MixedRendering: typeof MixedRendering,
     invokeJSFromDotNet?: (callInfo: Pointer, arg0: any, arg1: any, arg2: any) => any;
     endInvokeDotNetFromJS?: (callId: System_String, success: System_Boolean, resultJsonOrErrorMessage: System_String) => void;
     receiveByteArray?: (id: System_Int, data: System_Array<System_Byte>) => void;
@@ -82,6 +84,7 @@ export const Blazor: IBlazor = {
     PageTitle,
     InputFile,
     NavigationLock,
+    MixedRendering,
     getJSDataStreamChunk: getNextChunk,
     receiveDotNetDataStream: receiveDotNetDataStream,
     attachWebRendererInterop,

@@ -8,6 +8,12 @@ Microsoft.AspNetCore.Components.Routing.NavigationLock.ConfirmExternalNavigation
 Microsoft.AspNetCore.Components.Routing.NavigationLock.NavigationLock() -> void
 Microsoft.AspNetCore.Components.Routing.NavigationLock.OnBeforeInternalNavigation.get -> Microsoft.AspNetCore.Components.EventCallback<Microsoft.AspNetCore.Components.Routing.LocationChangingContext!>
 Microsoft.AspNetCore.Components.Routing.NavigationLock.OnBeforeInternalNavigation.set -> void
+Microsoft.AspNetCore.Components.Web.ClientAttribute
+Microsoft.AspNetCore.Components.Web.ClientAttribute.ClientAttribute() -> void
+Microsoft.AspNetCore.Components.Web.ServerAttribute
+Microsoft.AspNetCore.Components.Web.ServerAttribute.ServerAttribute() -> void
+Microsoft.AspNetCore.Components.Web.UsesMixedRenderingAttribute
+Microsoft.AspNetCore.Components.Web.UsesMixedRenderingAttribute.UsesMixedRenderingAttribute() -> void
 Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize<TItem>.SpacerElement.get -> string!
 Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize<TItem>.SpacerElement.set -> void
 Microsoft.AspNetCore.Components.Web.MouseEventArgs.MovementX.get -> double

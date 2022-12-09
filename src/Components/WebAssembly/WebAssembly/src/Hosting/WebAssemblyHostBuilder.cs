@@ -3,6 +3,7 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Reflection;
 using System.Text.Json;
 using Microsoft.AspNetCore.Components.Infrastructure;
 using Microsoft.AspNetCore.Components.RenderTree;
@@ -72,6 +73,7 @@ public sealed class WebAssemblyHostBuilder
         RootComponents = new RootComponentMappingCollection();
         Services = new ServiceCollection();
         Logging = new LoggingBuilder(Services);
+        MixedRenderingAssemblies = new List<string>();
 
         // Retrieve required attributes from JSRuntimeInvoker
         InitializeNavigationManager(jsRuntime);
@@ -158,9 +160,9 @@ public sealed class WebAssemblyHostBuilder
 
         var configFiles = new[]
         {
-                "appsettings.json",
-                $"appsettings.{applicationEnvironment}.json"
-            };
+            "appsettings.json",
+            $"appsettings.{applicationEnvironment}.json"
+        };
 
         foreach (var configFile in configFiles)
         {
@@ -178,6 +180,57 @@ public sealed class WebAssemblyHostBuilder
         }
 
         return hostEnvironment;
+    }
+
+    [SuppressMessage("Trimming", "IL2026", Justification = "We expect Razor component types to be retained in application code")]
+    [SuppressMessage("Trimming", "IL2072", Justification = "We expect Razor component types to be retained in application code")]
+    private void InitializeMixedRendering()
+    {
+        if (MixedRenderingAssemblies.Count == 0)
+        {
+            return;
+        }
+
+        var assemblies = new Assembly[MixedRenderingAssemblies.Count];
+
+        for (var i = 0; i < assemblies.Length; i++)
+        {
+            assemblies[i] = Assembly.Load(MixedRenderingAssemblies[i]);
+        }
+
+        var serverProxyIdentifiersByComponentType = new Dictionary<Type, string>();
+
+        foreach (var assembly in assemblies)
+        {
+            foreach (var type in assembly.GetTypes())
+            {
+                var isClientOnly = type.GetCustomAttribute<ClientAttribute>() is not null;
+                var isServerOnly = type.GetCustomAttribute<ServerAttribute>() is not null;
+
+                if (isClientOnly && isServerOnly)
+                {
+                    throw new InvalidOperationException(
+                        $"The component type '{type.FullName}' should not be annotated with both " +
+                        $"'{nameof(ClientAttribute)}' and '{nameof(ServerAttribute)}");
+                }
+
+                var identifier = $"bl_{type.FullName}";
+
+                if (isClientOnly)
+                {
+                    RootComponents.RegisterForJavaScript(type, identifier);
+                }
+                else if (isServerOnly)
+                {
+                    serverProxyIdentifiersByComponentType.Add(type, identifier);
+                }
+            }
+        }
+
+        Services.AddSingleton<IComponentActivator>(new ServerProxyComponentActivator(
+            DefaultComponentActivator.Instance,
+            DefaultWebAssemblyJSRuntime.Instance,
+            serverProxyIdentifiersByComponentType));
     }
 
     /// <summary>
@@ -205,6 +258,11 @@ public sealed class WebAssemblyHostBuilder
     /// Gets the logging builder for configuring logging services.
     /// </summary>
     public ILoggingBuilder Logging { get; }
+
+    /// <summary>
+    /// Gets the assemblies containing mixed rendering components.
+    /// </summary>
+    public IList<string> MixedRenderingAssemblies { get; }
 
     /// <summary>
     /// Registers a <see cref="IServiceProviderFactory{TBuilder}" /> instance to be used to create the <see cref="IServiceProvider" />.
@@ -246,6 +304,8 @@ public sealed class WebAssemblyHostBuilder
     /// <returns>A <see cref="WebAssemblyHost"/> object.</returns>
     public WebAssemblyHost Build()
     {
+        InitializeMixedRendering();
+
         // Intentionally overwrite configuration with the one we're creating.
         Services.AddSingleton<IConfiguration>(Configuration);
 

@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor(options =>
 {
-    options.RootComponents.RegisterForJavaScript<ServerCounter_server>(nameof(ServerCounter_server));
+    options.MixedRenderingAssemblies.Add(nameof(ServerWasmCombo));
 });
 
 var app = builder.Build();

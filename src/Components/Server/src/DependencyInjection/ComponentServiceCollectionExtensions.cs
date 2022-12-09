@@ -65,6 +65,8 @@ public static class ComponentServiceCollectionExtensions
         services.TryAddSingleton<RootComponentTypeCache>();
         services.TryAddSingleton<ComponentParameterDeserializer>();
         services.TryAddSingleton<ComponentParametersTypeCache>();
+        services.TryAddSingleton<MixedRenderingManager>();
+        services.TryAddScoped<IComponentActivator, ClientProxyComponentActivator>();
         services.TryAddSingleton<CircuitIdFactory>();
         services.TryAddScoped<IErrorBoundaryLogger, RemoteErrorBoundaryLogger>();
 

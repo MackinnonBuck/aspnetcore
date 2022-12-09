@@ -1,4 +1,8 @@
-﻿<p>
+﻿@using System.Collections.Generic
+
+@attribute [Client]
+
+<p>
     <button type="button" @onclick="() => _counter += IncrementAmount">Current count: @_counter</button>
 </p>
 
@@ -6,10 +10,7 @@
     Is Browser: @OperatingSystem.IsBrowser()
 </p>
 
-<p>
-    Server counter:<br />
-    <ServerCounter IncrementAmount="IncrementAmount" />
-</p>
+<ServerCounter IncrementAmount="IncrementAmount" />
 
 @code {
     int _counter;

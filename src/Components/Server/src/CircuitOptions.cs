@@ -1,6 +1,9 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
+using System.Reflection;
+using Microsoft.AspNetCore.Components.Web;
+
 namespace Microsoft.AspNetCore.Components.Server;
 
 /// <summary>
@@ -79,6 +82,11 @@ public sealed class CircuitOptions
     /// Gets options for root components within the circuit.
     /// </summary>
     public CircuitRootComponentOptions RootComponents { get; } = new CircuitRootComponentOptions();
+
+    /// <summary>
+    /// Gets the assemblies containing mixed rendering components.
+    /// </summary>
+    public IList<string> MixedRenderingAssemblies { get; } = new List<string>();
 
     internal IList<string> JavaScriptInitializers { get; } = new List<string>();
 }

@@ -3,31 +3,22 @@
 
 using Microsoft.JSInterop;
 
-namespace Microsoft.AspNetCore.Components.Combo.Infrastructure;
+namespace Microsoft.AspNetCore.Components.WebAssembly;
 
-public sealed class ServerProxy<TComponent> : IComponent, IHandleAfterRender, IAsyncDisposable where TComponent : IComponent
+internal sealed class ServerProxyComponent : IComponent, IHandleAfterRender, IAsyncDisposable
 {
-    private static readonly string s_identifier = typeof(TComponent).Name;
+    private readonly string _identifier;
+    private readonly IJSInProcessRuntime _jsRuntime = default!;
 
     private RenderHandle _renderHandle;
     private ElementReference _containerElementReference;
     private IReadOnlyDictionary<string, object>? _pendingParameters;
-    private IJSInProcessRuntime _jsInProcessRuntime = default!;
     private bool _isInitialized;
 
-    [Inject]
-    private IJSRuntime JSRuntime
+    public ServerProxyComponent(string identifier, IJSRuntime jsRuntime)
     {
-        get => _jsInProcessRuntime;
-        set
-        {
-            if (value is not IJSInProcessRuntime jSInProcessRuntime)
-            {
-                throw new InvalidOperationException($"{GetType().Name} expected the JS runtime to be an '{nameof(IJSInProcessRuntime)}'.");
-            }
-
-            _jsInProcessRuntime = jSInProcessRuntime;
-        }
+        _identifier = identifier;
+        _jsRuntime = (IJSInProcessRuntime)jsRuntime;
     }
 
     void IComponent.Attach(RenderHandle renderHandle)
@@ -56,10 +47,10 @@ public sealed class ServerProxy<TComponent> : IComponent, IHandleAfterRender, IA
             return Task.CompletedTask;
         }
 
-        _jsInProcessRuntime.InvokeVoid(
-            "__combo.setParameters",
+        _jsRuntime.InvokeVoid(
+            "Blazor._internal.MixedRendering.setParameters",
             _containerElementReference,
-            s_identifier,
+            _identifier,
             _pendingParameters,
             1 // App ID 1 because we're adding a root component on the server
         );
@@ -73,8 +64,8 @@ public sealed class ServerProxy<TComponent> : IComponent, IHandleAfterRender, IA
     {
         if (_isInitialized)
         {
-            _jsInProcessRuntime.InvokeVoid(
-                "__combo.dispose",
+            _jsRuntime.InvokeVoid(
+                "Blazor._internal.MixedRendering.dispose",
                 _containerElementReference);
         }
 

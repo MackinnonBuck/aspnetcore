@@ -5,9 +5,19 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Microsoft.AspNetCore.Components;
 
-internal sealed class DefaultComponentActivator : IComponentActivator
+/// <summary>
+/// The default activator for creating <see cref="IComponent"/> instances.
+/// </summary>
+public sealed class DefaultComponentActivator : IComponentActivator
 {
+    /// <summary>
+    /// Gets the default component activator instance.
+    /// </summary>
     public static IComponentActivator Instance { get; } = new DefaultComponentActivator();
+
+    internal DefaultComponentActivator()
+    {
+    }
 
     /// <inheritdoc />
     public IComponent CreateInstance([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type componentType)

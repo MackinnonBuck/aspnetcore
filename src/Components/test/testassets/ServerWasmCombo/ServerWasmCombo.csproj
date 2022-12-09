@@ -13,8 +13,6 @@
 
   <ItemGroup>
     <Reference Include="Microsoft.AspNetCore.Components.Web" />
-    <Reference Include="Microsoft.AspNetCore.Components.Combo" />
-    <Reference Include="Microsoft.AspNetCore.Components.Combo.SourceGeneration" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
   <ItemGroup>
