@@ -16,4 +16,8 @@
     <ProjectReference Include="..\ServerWasmCombo\ServerWasmCombo.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>
