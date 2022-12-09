@@ -1,3 +1,15 @@
+.client-component {
+    border: 2px solid green;
+    margin: 10px 10px;
+    padding: 5px 5px;
+}
+
+.server-component {
+    border: 2px solid red;
+    margin: 10px 10px;
+    padding: 5px 5px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

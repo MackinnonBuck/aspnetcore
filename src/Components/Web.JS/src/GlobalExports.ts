@@ -26,10 +26,13 @@ interface IBlazor {
   reconnect?: (existingConnection?: HubConnection) => Promise<boolean>;
   defaultReconnectionHandler?: DefaultReconnectionHandler;
   start?: ((userOptions?: Partial<CircuitStartOptions>) => Promise<void>) | ((options?: Partial<WebAssemblyStartOptions>) => Promise<void>);
+  startServer?: ((userOptions?: Partial<CircuitStartOptions>) => Promise<void>);
+  startWebAssembly?: ((options?: Partial<WebAssemblyStartOptions>) => Promise<void>);
   platform?: Platform;
   rootComponents: typeof RootComponentsFunctions;
 
   _internal: {
+    startPromises: Map<number, Promise<void>>;
     navigationManager: typeof navigationManagerInternalFunctions | any,
     domWrapper: typeof domFunctions,
     Virtualize: typeof Virtualize,
@@ -78,6 +81,7 @@ export const Blazor: IBlazor = {
   rootComponents: RootComponentsFunctions,
 
   _internal: {
+    startPromises: new Map<number, Promise<void>>(),
     navigationManager: navigationManagerInternalFunctions,
     domWrapper: domFunctions,
     Virtualize,

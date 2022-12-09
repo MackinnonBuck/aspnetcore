@@ -1,6 +1,21 @@
 ﻿@page "/counter"
 
-<h1>This header is rendered from Blazor Server</h1>
+<div class="server-component">
+    <h1>This header is rendered from Blazor Server</h1>
 
-<ClientCounter IncrementAmount="2" />
+    <p>
+        Server thinks the client's count is @_clientCounter
+    </p>
+</div>
+
+<ClientCounter IncrementAmount="2" Incremented="OnClientCounterIncremented" />
+
+@code {
+    private int _clientCounter;
+
+    private void OnClientCounterIncremented(int counter)
+    {
+        _clientCounter = counter;
+    }
+}
 

@@ -14,8 +14,6 @@
 <body>
     <component type="typeof(App)" render-mode="ServerPrerendered" />
 
-    @*<div id="app">Loading...</div>*@
-
     <div id="blazor-error-ui">
         <environment include="Staging,Production">
             An error has occurred. This application may no longer respond until reloaded.
@@ -27,11 +25,6 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <script src="_framework/blazor.combo.js" autostart="false"></script>
-    <script>
-        Blazor.start({
-            //bootMode: 'server',
-        })
-    </script>
+    <script src="_framework/blazor.combo.js"></script>
 </body>
 </html>

@@ -1,17 +1,28 @@
 ﻿@attribute [Server]
 
-<p>
-    <button type="button" @onclick="() => _counter += IncrementAmount">Current count: @_counter</button>
-</p>
+<div class="server-component">
+    <p>
+        <button type="button" @onclick="IncrementCounter">Current count: @_counter</button>
+    </p>
 
-<p>
-    Is Browser: @OperatingSystem.IsBrowser()
-</p>
+    <p>
+        Is Browser: @OperatingSystem.IsBrowser()
+    </p>
+</div>
 
 @code {
     int _counter;
 
     [Parameter]
     public int IncrementAmount { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> Incremented { get; set; }
+
+    private async Task IncrementCounter()
+    {
+        _counter += IncrementAmount;
+        await Incremented.InvokeAsync(_counter);
+    }
 }
 

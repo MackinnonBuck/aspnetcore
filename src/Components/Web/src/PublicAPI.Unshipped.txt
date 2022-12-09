@@ -12,8 +12,6 @@ Microsoft.AspNetCore.Components.Web.ClientAttribute
 Microsoft.AspNetCore.Components.Web.ClientAttribute.ClientAttribute() -> void
 Microsoft.AspNetCore.Components.Web.ServerAttribute
 Microsoft.AspNetCore.Components.Web.ServerAttribute.ServerAttribute() -> void
-Microsoft.AspNetCore.Components.Web.UsesMixedRenderingAttribute
-Microsoft.AspNetCore.Components.Web.UsesMixedRenderingAttribute.UsesMixedRenderingAttribute() -> void
 Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize<TItem>.SpacerElement.get -> string!
 Microsoft.AspNetCore.Components.Web.Virtualization.Virtualize<TItem>.SpacerElement.set -> void
 Microsoft.AspNetCore.Components.Web.MouseEventArgs.MovementX.get -> double

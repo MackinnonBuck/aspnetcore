@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.JSInterop;
 
 namespace Microsoft.AspNetCore.Components.WebAssembly;
@@ -26,7 +27,7 @@ internal class ServerProxyComponentActivator : IComponentActivator
     {
         if (_identifiersByComponentType.TryGetValue(componentType, out var identifier))
         {
-            return new ServerProxyComponent(identifier, _jsRuntime);
+            return new ProxyComponent(identifier, _jsRuntime, 1);
         }
 
         return _underlyingActivator.CreateInstance(componentType);
