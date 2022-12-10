@@ -1,0 +1,21 @@
+﻿@attribute [Server]
+
+<div class="@DemoUtils.PlatformClass">
+    <button @onclick="IncrementAsync">Click count: @_count</button>
+</div>
+
+@code {
+    private int _count = 0;
+
+    [Parameter]
+    public int IncrementAmount { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> Incremented { get; set; }
+
+    private async Task IncrementAsync()
+    {
+        _count += IncrementAmount;
+        await Incremented.InvokeAsync(_count);
+    }
+}

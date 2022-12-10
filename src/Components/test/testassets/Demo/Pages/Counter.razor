@@ -1,0 +1,20 @@
+﻿@page "/counter"
+
+<PageTitle>Counter</PageTitle>
+
+<div class="@DemoUtils.PlatformClass">
+    <h1>Counter</h1>
+
+    Client count: @_clientCount
+
+    <ClientCounter IncrementAmount="3" Incremented="OnClientCounterIncremented" />
+</div>
+
+@code {
+    private int _clientCount = 0;
+
+    private void OnClientCounterIncremented(int count)
+    {
+        _clientCount = count;
+    }
+}

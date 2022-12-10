@@ -1,0 +1,32 @@
+﻿<div class="@DemoUtils.PlatformClass">
+    <button @onclick="IncrementAsync">Click count: @_count</button>
+</div>
+
+@code {
+    private int _count;
+
+    [Parameter]
+    public int IncrementAmount { get; set; } = 1;
+
+    [Parameter]
+    public EventCallback<int> Incremented { get; set; }
+
+    private async Task IncrementAsync()
+    {
+        _count += IncrementAmount;
+        await Incremented.InvokeAsync(_count);
+    }
+
+    #region This is getting meta
+    private int _serverCount;
+    private void OnServerCounterIncremented(int count)
+    {
+        _serverCount = count;
+    }
+    /*
+    <br />
+    Server count: @_serverCount
+    <ServerCounter IncrementAmount="IncrementAmount * 2" Incremented="OnServerCounterIncremented" />
+     */
+    #endregion
+}
