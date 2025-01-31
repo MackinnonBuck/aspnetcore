@@ -33,7 +33,8 @@ public abstract class UserStoreBase<TUser, [DynamicallyAccessedMembers(Dynamical
     IUserTwoFactorStore<TUser>,
     IUserAuthenticationTokenStore<TUser>,
     IUserAuthenticatorKeyStore<TUser>,
-    IUserTwoFactorRecoveryCodeStore<TUser>
+    IUserTwoFactorRecoveryCodeStore<TUser>,
+    IUserPublicKeyStore<TUser>
     where TUser : IdentityUser<TKey>
     where TKey : IEquatable<TKey>
     where TUserClaim : IdentityUserClaim<TKey>, new()
@@ -780,6 +781,56 @@ public abstract class UserStoreBase<TUser, [DynamicallyAccessedMembers(Dynamical
         ThrowIfDisposed();
         ArgumentNullThrowHelper.ThrowIfNull(user);
         return Task.FromResult(user.TwoFactorEnabled);
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="publicKey"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+#pragma warning disable RS0016 // Add public types and members to the declared API
+    public Task SetPublicKeyAsync(TUser user, string? publicKey, CancellationToken cancellationToken)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        ThrowIfDisposed();
+        ArgumentNullThrowHelper.ThrowIfNull(user);
+        user.PublicKey = publicKey;
+        return Task.CompletedTask;
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+#pragma warning disable RS0016 // Add public types and members to the declared API
+    public Task<string?> GetPublicKeyAsync(TUser user, CancellationToken cancellationToken)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        ThrowIfDisposed();
+        ArgumentNullThrowHelper.ThrowIfNull(user);
+        return Task.FromResult(user.PublicKey);
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="cancellationToken"></param>
+    /// <returns></returns>
+#pragma warning disable RS0016 // Add public types and members to the declared API
+    public Task<bool> HasPublicKeyAsync(TUser user, CancellationToken cancellationToken)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        ThrowIfDisposed();
+        ArgumentNullThrowHelper.ThrowIfNull(user);
+        return Task.FromResult(user.PublicKey is not null);
     }
 
     /// <summary>

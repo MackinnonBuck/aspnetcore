@@ -126,6 +126,14 @@ public class IdentityUser<TKey> where TKey : IEquatable<TKey>
     public virtual bool TwoFactorEnabled { get; set; }
 
     /// <summary>
+    /// TODO
+    /// </summary>
+    [ProtectedPersonalData]
+#pragma warning disable RS0016 // Add public types and members to the declared API
+    public virtual string? PublicKey { get; set; }
+#pragma warning restore RS0016 // Add public types and members to the declared API
+
+    /// <summary>
     /// Gets or sets the date and time, in UTC, when any user lockout ends.
     /// </summary>
     /// <remarks>

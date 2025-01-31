@@ -210,6 +210,10 @@
       <Uri>https://github.com/dotnet/runtime</Uri>
       <Sha>a9d67ec265ed4078265d70d155d06316acadf6fe</Sha>
     </Dependency>
+    <Dependency Name="System.Formats.Cbor" Version="10.0.0-preview.2.25078.10">
+      <Uri>https://github.com/dotnet/runtime</Uri>
+      <Sha>a9d67ec265ed4078265d70d155d06316acadf6fe</Sha>
+    </Dependency>
     <Dependency Name="System.IO.Pipelines" Version="10.0.0-preview.2.25078.10">
       <Uri>https://github.com/dotnet/runtime</Uri>
       <Sha>a9d67ec265ed4078265d70d155d06316acadf6fe</Sha>

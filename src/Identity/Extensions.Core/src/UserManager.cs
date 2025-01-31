@@ -1984,6 +1984,37 @@ public class UserManager<TUser> : IDisposable where TUser : class
     }
 
     /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="user"></param>
+    /// <returns></returns>
+#pragma warning disable RS0016 // Add public types and members to the declared API
+    public virtual async Task<bool> HasPublicKeyAsync(TUser user)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+    {
+        ThrowIfDisposed();
+        var store = GetPublicKeyStore();
+        ArgumentNullThrowHelper.ThrowIfNull(user);
+        return await store.HasPublicKeyAsync(user, CancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// TODO
+    /// </summary>
+    /// <param name="user"></param>
+    /// <param name="publicKey"></param>
+    /// <returns></returns>
+#pragma warning disable RS0016 // Add public types and members to the declared API
+    public virtual async Task SetPublicKeyAsync(TUser user, string? publicKey)
+#pragma warning restore RS0016 // Add public types and members to the declared API
+    {
+        ThrowIfDisposed();
+        var store = GetPublicKeyStore();
+        ArgumentNullThrowHelper.ThrowIfNull(user);
+        await store.SetPublicKeyAsync(user, publicKey, CancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
     /// Generates a new base32 encoded 160-bit security secret (size of SHA1 hash).
     /// </summary>
     /// <returns>The new security secret.</returns>
@@ -2381,44 +2412,19 @@ public class UserManager<TUser> : IDisposable where TUser : class
     }
 
     private IUserAuthenticatorKeyStore<TUser> GetAuthenticatorKeyStore()
-    {
-        var cast = Store as IUserAuthenticatorKeyStore<TUser>;
-        if (cast == null)
-        {
-            throw new NotSupportedException(Resources.StoreNotIUserAuthenticatorKeyStore);
-        }
-        return cast;
-    }
+        => Store as IUserAuthenticatorKeyStore<TUser> ?? throw new NotSupportedException(Resources.StoreNotIUserAuthenticatorKeyStore);
 
     private IUserTwoFactorRecoveryCodeStore<TUser> GetRecoveryCodeStore()
-    {
-        var cast = Store as IUserTwoFactorRecoveryCodeStore<TUser>;
-        if (cast == null)
-        {
-            throw new NotSupportedException(Resources.StoreNotIUserTwoFactorRecoveryCodeStore);
-        }
-        return cast;
-    }
+        => Store as IUserTwoFactorRecoveryCodeStore<TUser> ?? throw new NotSupportedException(Resources.StoreNotIUserTwoFactorRecoveryCodeStore);
 
     private IUserAuthenticationTokenStore<TUser> GetAuthenticationTokenStore()
-    {
-        var cast = Store as IUserAuthenticationTokenStore<TUser>;
-        if (cast == null)
-        {
-            throw new NotSupportedException(Resources.StoreNotIUserAuthenticationTokenStore);
-        }
-        return cast;
-    }
+        => Store as IUserAuthenticationTokenStore<TUser> ?? throw new NotSupportedException(Resources.StoreNotIUserAuthenticationTokenStore);
 
     private IUserPasswordStore<TUser> GetPasswordStore()
-    {
-        var cast = Store as IUserPasswordStore<TUser>;
-        if (cast == null)
-        {
-            throw new NotSupportedException(Resources.StoreNotIUserPasswordStore);
-        }
-        return cast;
-    }
+        => Store as IUserPasswordStore<TUser> ?? throw new NotSupportedException(Resources.StoreNotIUserPasswordStore);
+
+    private IUserPublicKeyStore<TUser> GetPublicKeyStore()
+        => Store as IUserPublicKeyStore<TUser> ?? throw new NotSupportedException(Resources.StoreNotIUserPublicKeyStore);
 
     /// <summary>
     /// Throws if this class has been disposed.
